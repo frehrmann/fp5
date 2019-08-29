@@ -1,7 +1,9 @@
 var root;
 
 function setup() {
-  createCanvas(400, 400);
+  let canvas = createCanvas(400, 400);
+  canvas.parent('trees-holder');
+
   root = new Node();
   root.set(50, 0);
   let sub = newNode(root, 30, 10);
@@ -34,6 +36,7 @@ class Node {
     this.length = 10.0;
     this.heading = 0.0;
     this.nutri = true;
+    this.size = 5.0;
   }
 
   setParent(its_pa) {
@@ -62,14 +65,16 @@ class Node {
 
 
   grow() {
-    this.length += 0.05;
     if (this.childs.length > 0) {
       let sun = 0;
       for(let i=0; i<this.childs.length; i++) {
         sun += this.childs[i].grow();
       }
+      this.length += 0.05;
       return sun;
    } else {
+      this.size += 0.01;
+      this.length += 0.02;
       return 1;
     }
   }
@@ -82,7 +87,7 @@ class Node {
     vertex(0, -this.length);
     endShape();
     translate(0, -this.length);
-    circle(0, 0, 5);
+    circle(0, 0, this.size);
     this.childs.forEach((child) => {child.draw()});
     pop();
   }
