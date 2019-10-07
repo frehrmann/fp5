@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>fp5 - scripts for me</title>
+</head>
+
+<body>
+  {% for sketch in sketches %}
+  <h1>{{ sketch.name|title }}</h1>
+  <a href="sketch/{{ sketch.name }}">{{ sketch.name }}</a>
+  <div>{{ sketch.desc }}</div>
+  {% endfor %}
+</body>
+
+</html>
+
