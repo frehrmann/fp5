@@ -1,40 +1,49 @@
+let pg;
+
 function setup() {
   createCanvas(600, 300);
-}
+  background(0);
 
-let i=0;
-let inc=50; // pixel per second
-let points = [0];
-let ip = 1;
+  pg = createGraphics(600, 300);
+
+  let c1 = color(0, 0, 255);
+  let c2 = color(0, 255, 255);
+
+  for(let i=0; i<height; i++) {
+    let c = lerpColor(c1, c2, i/height);
+    pg.stroke(c);
+    pg.line(0, i, width, i);
+  }
+
+  pg.stroke(100, 255, 50);
+  pg.strokeWeight(10);
+  pg.fill(0, 200 ,0);
+  pg.textFont('Georgia');
+  pg.textSize(120);
+  pg.textAlign(CENTER, CENTER);
+  pg.text('STARTER', width/2, height/2);
+
+  // image(pg, 0, 0);
+
+  rectMode(CENTER);
+  fill(255, 10);
+  noStroke();
+
+}
 
 
 function draw() {
-  background(100, 100, 200);
+  let x = random(width);
+  let y = random(height);
+  let r = random(3, 20);
 
-  strokeWeight(2);
-  stroke(255);
-  fill(0);
-  circle(width/2, height/2, i);
+  for(let i=0; i<10; i++) {
+    let c = pg.get(x, y);
+    fill(red(c), green(c), blue(c), 10);
+    rect(x, y, r, r);
+  }
+}
 
-  i += inc*deltaTime/1000;
-
-  if((inc > 0 && (i > width || i > height)) ||
-     (inc < 0 && i < 0))
-    inc *= -1;
-
-
-  if(ip > width) ip = 1
-  let np = points[ip-1] + random(-5, 5);
-  if(ip < points.length)
-    points[ip] = np;
-  else
-    points.push(np);
-  ip+=1;
-
-  stroke(255, 0, 0);
-  noFill();
-  beginShape();
-  for(let i=0; i<points.length; i++) vertex(i, points[i]+height/2);
-  endShape();
-
+function mousePressed() {
+  background(0);
 }
