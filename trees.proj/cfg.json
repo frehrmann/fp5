@@ -1,0 +1,6 @@
+{ "script_list" : [
+    "trees.js",
+    "sketch_trees.js"
+  ],
+  "dom" : true
+}

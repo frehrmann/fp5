@@ -15,7 +15,6 @@ statics = mypath / 'static'
 @dataclass
 class Sketch:
     '''Contains Sketch data.'''
-
     name : str
     desc : str
 
@@ -38,12 +37,15 @@ def sketch_page(sketch):
         abort(404)
     with (sketch_dir / 'cfg.json').open('r') as jf:
         config = json.load(jf)
-    return render_template('sketch.html', sketch=sketch, scripts=config['script_list'], title=sketch)
+    if not "dom" in config: config["dom"] = False
+    if not "sound" in config: config["sound"] = False
+    return render_template('sketch.html', sketch=sketch, scripts=config['script_list'],
+               title=sketch, dom=config["dom"], sound=config["sound"])
 
 @app.route('/sketch/<sketch>/<script>')
 def sketch(sketch, script):
-    if sketch == 'p5':
-        return send_file(mypath / 'p5' / script)
+    if sketch in ('p5', 'common', 'static'):
+        return send_file(mypath / sketch / script)
     else:
         return send_file(mypath / (sketch+'.proj') / script)
 
