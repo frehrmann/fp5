@@ -1,19 +1,22 @@
 var triOsc;
 var env;
+let freq;
 
-const ATTACK_TIME = 0.004;
+const ATTACK_TIME = 0.01;
 const ATTACK_LEVEL = 1.0;
-const DECAY_TIME = 0.002;
-const SUSTAIN_LEVEL = 0.2;
-const RELEASE_TIME = 0.2;
+const DECAY_TIME = 0.1;
+const SUSTAIN_LEVEL = 0.6;
+const RELEASE_TIME = 2.0;
 const RELEASE_LEVEL = 0.0;
 
-const DURATION_MS = 200;
+const DURATION_MS = 300;
+const STOP_MS = 200;
 
 var noteFreq = [];
 var nNotes;
 
 var triggerNext = 0;
+var triggerStop = 0;
 var noteIndex = 0;
 
 function setup() {
@@ -25,12 +28,12 @@ function setup() {
   env.setADSR(ATTACK_TIME, DECAY_TIME, SUSTAIN_LEVEL, RELEASE_TIME);
   env.setRange(ATTACK_LEVEL, RELEASE_LEVEL);
 
-  triOsc = new p5.Oscillator('triangle');
+  triOsc = new p5.Oscillator('sine');
   triOsc.amp(env);
-  triOsc.start();
+  // triOsc.start();
 
   for(let midi=56; midi <= 78; midi++) {
-    let freq = pow(2, (midi-69)/12.0) * 440;
+    freq = pow(2, (midi-69)/12.0) * 440;
     noteFreq.push(freq);
   }
   nNotes = noteFreq.length;
@@ -57,15 +60,19 @@ function drawADSR() {
 function draw() {
   background(200);
   drawADSR();
+  text(nf(freq, 3, 3), 100, 160);
 
   if(millis() > triggerNext) {
 
-    let freq = noteFreq[noteIndex % nNotes];
-    text(nf(freq, 3, 3), 100, 160);
+    freq = noteFreq[noteIndex % nNotes];
     triOsc.freq(freq);
+    triOsc.start();
     env.play();
     noteIndex++;
     triggerNext = millis() + DURATION_MS;
+    triggerStop = millis() + STOP_MS;
+  } else if(millis() > triggerStop) {
+    triOsc.stop();
   }
 
 }
