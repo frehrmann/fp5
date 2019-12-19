@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, abort
 from pathlib import Path
 import json
 from sys import version_info
@@ -35,7 +35,10 @@ def sketch_page(sketch):
 
     if not sketch_dir.is_dir():
         abort(404)
-    with (sketch_dir / 'cfg.json').open('r') as jf:
+    config_file = sketch_dir / 'cfg.json'
+    if not config_file.exists():
+        abort(404)
+    with config_file.open('r') as jf:
         config = json.load(jf)
     if not "dom" in config: config["dom"] = False
     if not "sound" in config: config["sound"] = False
