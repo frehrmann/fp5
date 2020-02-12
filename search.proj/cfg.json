@@ -1,3 +1,5 @@
 { "script_list" : [
-    "search.js"
+    "collections.js",
+    "search.js",
+    "search_app.js"
   ] }

@@ -1,10 +1,14 @@
-let pg;
+let pgs = [];
+let pix = 0;
+let img;
 
-function setup() {
-  createCanvas(600, 300);
-  background(0);
+function preload() {
+  img = loadImage('starter/eye.png');
+}
 
-  pg = createGraphics(600, 300);
+function makeStarter() {
+
+  let pg = createGraphics(600, 300);
 
   let c1 = color(0, 0, 255);
   let c2 = color(0, 255, 255);
@@ -23,7 +27,16 @@ function setup() {
   pg.textAlign(CENTER, CENTER);
   pg.text('STARTER', width/2, height/2);
 
-  // image(pg, 0, 0);
+  return pg;
+}
+
+function setup() {
+
+  pgs.push(makeStarter());
+  pgs.push(img);
+
+  createCanvas(600, 300);
+  mousePressed();
 
   rectMode(CENTER);
   fill(255, 10);
@@ -38,7 +51,7 @@ function draw() {
   let r = random(3, 20);
 
   for(let i=0; i<10; i++) {
-    let c = pg.get(x, y);
+    let c = pgs[pix].get(x, y);
     fill(red(c), green(c), blue(c), 10);
     rect(x, y, r, r);
   }
@@ -46,4 +59,6 @@ function draw() {
 
 function mousePressed() {
   background(0);
+  pix = int(random(pgs.length)); // how to get an integer between 0 and pgs.length-1 (so random element of it).
+  print(pix);
 }
