@@ -3,7 +3,7 @@ from pathlib import Path
 import json
 from sys import version_info
 from dataclasses import dataclass
-
+from time import time
 
 app = Flask(__name__)
 
@@ -11,6 +11,8 @@ app.logger.debug(f'{version_info}')
 
 mypath = Path('.')
 statics = mypath / 'static'
+
+tstart = time()
 
 @dataclass
 class Sketch:
@@ -42,8 +44,12 @@ def sketch_page(sketch):
         config = json.load(jf)
     if not "dom" in config: config["dom"] = False
     if not "sound" in config: config["sound"] = False
+    mtimes = []
+    for f in sketch_dir.iterdir():
+        if f.is_dir(): continue
+        mtimes.append(f.stat().st_mtime)
     return render_template('sketch.html', sketch=sketch, scripts=config['script_list'],
-               title=sketch, dom=config["dom"], sound=config["sound"])
+               title=sketch, dom=config["dom"], sound=config["sound"], latest=max(mtimes)-tstart)
 
 @app.route('/sketch/<sketch>/<script>')
 def sketch(sketch, script):
