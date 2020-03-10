@@ -72,6 +72,7 @@ function Search(sizex, sizey, conv) {
   this.just_visited = [];
   this.count = 0;
   this.select_fun = function(search_queue) { return search_queue.popFirst(); };
+  this.visited_list = [];
 }
 
 Search.prototype.setStart = function(i, j) {
@@ -79,6 +80,7 @@ Search.prototype.setStart = function(i, j) {
   this.start = idx;
   this.search_queue.push(idx);
   this.grid[idx].setVisited();
+  this.visited_list.push({i: i, j: j});
 }
 
 Search.prototype.setTarget = function(i, j) {
@@ -135,6 +137,7 @@ Search.prototype.step = function() {
         n.cell.setVisited();
         this.search_queue.push(n.idx);
         this.just_visited.push(this.conv.ij(n.idx));
+        this.visited_list.push(this.conv.ij(n.idx));
       }
     }
   }
@@ -166,13 +169,7 @@ Search.prototype.neighbour = function(ij, dir) {
 
 // get all visited
 Search.prototype.getVisited = function() {
-  let visited_list = [];
-  for(let i = 0; i < this.grid.length; i++) {
-    if(this.grid[i].visited()) {
-      visited_list.push(this.conv.ij(i));
-    }
-  }
-  return visited_list;
+  return this.visited_list;
 }
 
 function A_Star(target, conv, max_dist) {
