@@ -31,6 +31,10 @@ let path = [];
 
 let obst; // obstacles
 
+const M_UNKOWN = 0;
+const M_ASTAR = 1;
+const M_BREADTH = 2;
+let method = M_UNKOWN;
 
 
 function setup() {
@@ -99,6 +103,10 @@ function init_search() {
   for(let o of obst) {
     search.setOccupied(o.i, o.j);
   }
+  if(method == M_ASTAR) {
+    let a = new A_Star(target, convert, 1000);
+    search.setSelectFun(a.select);
+  }
   path = [];
 }
 
@@ -118,7 +126,8 @@ function drawStateEnv() {
   noFill();
   textAlign(CENTER);
   textSize(30);
-  text("Draw Obstacles! Press Enter to continue.", width/2, height-100);
+  text("Draw Obstacles!", width/2, height-100);
+  text("Start Search: A - A*, B - Breadth First", width/2, height-50);
 }
 
 function drawStateStart() {
@@ -208,9 +217,19 @@ function mouseClicked() {
 }
 
 function keyReleased() {
-  if(keyCode == ENTER && state == DRAW_ENV) {
-    state = SET_START;
-    return false;
+  if(state == DRAW_ENV) {
+    print(key);
+    if(key == 'A' || key == 'a') {
+      method = M_ASTAR;
+    } else if(key =='B' || key == 'b') {
+      method = M_BREADTH;
+    } else {
+      method = M_UNKOWN;
+    }
+    if(method != M_UNKOWN) {
+      state = SET_START;
+      return false;
+    }
   }
 }
 
