@@ -31,6 +31,8 @@ let path = [];
 
 let obst; // obstacles
 
+let a_star;
+
 const M_UNKOWN = 0;
 const M_ASTAR = 1;
 const M_BREADTH = 2;
@@ -38,6 +40,8 @@ let method = M_UNKOWN;
 
 
 function setup() {
+  test_SearchList();
+
   createCanvas(600, 600);
 
   pg = createGraphics(600, 600);
@@ -97,15 +101,14 @@ function draw() {
 }
 
 function init_search() {
-  search = new Search(maxi+1,maxj+1, convert);
+  search = new Search(maxi+1, maxj+1, convert);
   search.setStart(start.i, start.j);
   search.setTarget(target.i, target.j);
   for(let o of obst) {
     search.setOccupied(o.i, o.j);
   }
   if(method == M_ASTAR) {
-    let a = new A_Star(target, convert, 1000);
-    search.setSelectFun(a.select);
+    search.setSelectFun(search.aStarSelect);
   }
   path = [];
 }
@@ -218,7 +221,6 @@ function mouseClicked() {
 
 function keyReleased() {
   if(state == DRAW_ENV) {
-    print(key);
     if(key == 'A' || key == 'a') {
       method = M_ASTAR;
     } else if(key =='B' || key == 'b') {
@@ -228,8 +230,10 @@ function keyReleased() {
     }
     if(method != M_UNKOWN) {
       state = SET_START;
-      return false;
     }
+  } else if(state == COMPUTING) {
+    if(keyCode == ESCAPE)
+      finished = true;
   }
 }
 

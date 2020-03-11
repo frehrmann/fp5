@@ -172,22 +172,27 @@ Search.prototype.getVisited = function() {
   return this.visited_list;
 }
 
-function A_Star(target, conv, max_dist) {
-  this.target = target;
-  this.conv = conv;
-  this.maxd = max_dist;
-}
 
-A_Star.prototype.select = function(select_queue) {
-  let min_d = this.maxd;
+Search.prototype.aStarSelect = function(select_queue) {
+  let min_d = undefined;
   let min_node;
-
-  for(let node in select_queue) {
+  print("*");
+  let it = search.search_queue.getIter();
+  let elem = it.next()
+  while(!elem.done) {
+    let node = elem.value;
     let ij = this.conv.ij(node.idx);
-    let sqd = (ij.i - this.target.i)**2 + (ij.j - this.target.j)**2;
-    if(sqd < min_d) {
-      min_d = sq;
+    print(node.idx + "; " + ij.i + ", " + ij.j);
+    let a_target = this.conv.ij(this.target);
+    let sqd = (ij.i - a_target.i)**2 + (ij.j - a_target.j)**2;
+    if(min_d === undefined || sqd < min_d) {
+      min_d = sqd;
       min_node = node;
     }
+
+    elem = it.next();
   }
+  print("= " + min_node.idx);
+  select_queue.remove(min_node);
+  return min_node;
 }
